@@ -1,0 +1,16 @@
+- name: Retreive file from TS
+  hosts: toolservers
+  become: yes
+
+  tasks:
+    - name: Find /var/log files equal or greater than 10 megabytes ending with .old or .log.gz via regex
+      find:
+        paths: /mnt/gluster/backup/hybris/logs/
+        patterns: ""^20181013""
+        use_regex: yes
+    - name: use fetch to get the files
+      fetch:
+        src: "{{ item.path }}"
+        dest: ./logs/
+        flat: yes
+      with_items: "{{ file_2_fetch.files }}"
